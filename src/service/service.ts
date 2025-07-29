@@ -99,3 +99,13 @@ export async function FetchInterview(email: string) {
     throw new Error("Error Fetching Interviews");
   } else return data;
 }
+
+export async function DeleteInterview(interview_id: string) {
+  const { data, error } = await supabase
+    .from("Interview")
+    .delete()
+    .eq("interview_id", interview_id);
+  if (error) {
+    throw new Error("Error Deleting Interview");
+  } else return data;
+}
