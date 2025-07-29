@@ -108,9 +108,13 @@ Train anytime, anywhere — and **master your interview performance**!
 
 - **Landing Page:**  
   ![Landing page Screenshot](./snapshots/dashboard.png)
+   <img width="1907" height="910" alt="Screenshot 2025-07-29 151436" src="https://github.com/user-attachments/assets/f990ab80-51c7-4674-bfe0-9e9a5f74a122" />
+
 
 - **Dashboard:**  
-  ![Dashboard Screenshot](./snapshots/dashboard.png)
+  ![Dashboard Screenshot]
+  <img width="1907" height="910" alt="Screenshot 2025-07-29 151436" src="https://github.com/user-attachments/assets/99203bef-4f62-43de-ad7c-7f02471ca0cc" />
+
 
 
 - **Interview Session:**  
