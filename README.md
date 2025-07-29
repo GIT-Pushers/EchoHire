@@ -107,23 +107,19 @@ Train anytime, anywhere — and **master your interview performance**!
 
 
 - **Landing Page:**  
-  ![Landing page Screenshot](./snapshots/dashboard.png)
    <img width="1280" height="486" alt="image" src="https://github.com/user-attachments/assets/b3865ff5-7d58-4ff4-af06-85bdfdb3897d" />
 
 
 - **Dashboard:**  
-  ![Dashboard Screenshot]
   <img width="1280" height="611" alt="image" src="https://github.com/user-attachments/assets/32f128a7-ad63-48c4-8d2b-edc4cb1e4e9f" />
 
 
 
 - **Interview Session:**  
-  ![Interview Session Screenshot]
   <img width="1907" height="910" alt="Screenshot 2025-07-29 151436" src="https://github.com/user-attachments/assets/3d40ef7f-1e7b-4c47-8ea0-1d98778cd89b" />
 
 
 - **Feedback:**  
-  ![Feedback Screenshot]
   <img width="1918" height="919" alt="Screenshot 2025-07-29 151530" src="https://github.com/user-attachments/assets/11be7542-661f-429c-a6c3-f00211648b94" />
 
 
