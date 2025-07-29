@@ -6,8 +6,8 @@ import React, { useState } from 'react'; // Import useState for dropdown functio
 const HelpPage = () => {
   const faqs = [
     {
-      question: "What is AI Interview Pro?",
-      answer: "AI Interview Pro is an online platform that uses Artificial Intelligence to conduct mock interviews, providing students with a realistic practice environment and instant feedback to improve their interview skills.",
+      question: "What is EchoHire?",
+      answer: "EchoHire is an online platform that uses Artificial Intelligence to conduct mock interviews, providing students with a realistic practice environment and instant feedback to improve their interview skills.",
     },
     {
       question: "How do I start an interview?",
@@ -55,9 +55,9 @@ const HelpPage = () => {
         <div className="px-4 md:px-6">
           {/* About the Website Section */}
           <section className="mb-10">
-            <h2 className="text-2xl font-semibold mb-4 text-foreground">About AI Interview Pro</h2>
+            <h2 className="text-2xl font-semibold mb-4 text-foreground">About EchoHire</h2>
             <p className="text-lg text-muted-foreground leading-relaxed">
-              **AI Interview Pro** is designed to revolutionize the way students prepare for job interviews.
+              **EchoHire** is designed to revolutionize the way students prepare for job interviews.
               Our platform provides a unique, one-to-one interview training experience powered by advanced Artificial Intelligence.
               You can engage in realistic mock interviews with an AI interviewer that simulates real-world scenarios, asks relevant questions, and provides instant, constructive feedback.
             </p>
