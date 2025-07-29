@@ -109,3 +109,52 @@ export async function DeleteInterview(interview_id: string) {
     throw new Error("Error Deleting Interview");
   } else return data;
 }
+
+export interface InterviewFeedback {
+  communication: number;
+  confidence: number;
+  technicalKnowledge: number;
+  collaboration: number;
+  hirePercentage: number;
+  suggestion: string;
+}
+interface FeedbackResponse {
+  communication: number;
+  confidence: number;
+  technicalKnowledge: number;
+  collaboration: number;
+  hirePercentage: number;
+  suggestion: string;
+}
+export async function generateFeedBack(
+  transcript: string
+): Promise<FeedbackResponse | null> {
+  try {
+    const response = await axios.post<FeedbackResponse>("/api/getFeedBack", {
+      transcript,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error generating feedback:", error);
+    return null;
+  }
+}
+
+export async function AddFeedback({
+  interview_id,
+  email,
+  feedback,
+}: {
+  interview_id: string;
+  email: string;
+  feedback: InterviewFeedback;
+}) {
+  const { error } = await supabase
+    .from("feedback")
+    .insert({ interview_id, email, feedback });
+  if (error) {
+    throw new Error("Error Uploading FeedBack");
+  } else {
+    console.log("Added Feedback");
+  }
+}

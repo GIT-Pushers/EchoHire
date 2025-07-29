@@ -187,7 +187,7 @@ const DashBoard = () => {
         {interviews && interviews.length > 0 && (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {interviews.map((interview) => {
-              const interviewLink = `${process.env.NEXT_PUBLIC_BASEURL}/interview/${interview.interview_id}`;
+              const interviewLink = `${process.env.NEXT_PUBLIC_BASE_URL}/interview/${interview.interview_id}`;
 
               return (
                 <Card

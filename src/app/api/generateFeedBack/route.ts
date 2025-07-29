@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
     const prompt = `
 You are an AI interview evaluator. Analyze the following transcript and provide a JSON response with:
@@ -47,7 +47,7 @@ ${transcript}
       contents: [{ role: "user", parts: [{ text: prompt }] }],
       generationConfig: {
         temperature: 0.5,
-        maxOutputTokens: 1024,
+        maxOutputTokens: 2048,
       },
     });
 
@@ -55,9 +55,10 @@ ${transcript}
     const text = response.text();
 
     try {
-      const parsed = JSON.parse(text);
+      const cleaned = text.replace(/```json|```/g, "").trim();
+      const parsed = JSON.parse(cleaned);
       return NextResponse.json(parsed, { status: 200 });
-    } catch (parseError) {
+    } catch {
       console.error("Failed to parse JSON from Gemini output:", text);
       return NextResponse.json(
         { error: "Gemini output is not valid JSON." },
