@@ -112,11 +112,16 @@ Train anytime, anywhere — and **master your interview performance**!
 - **Dashboard:**  
   ![Dashboard Screenshot](./snapshots/dashboard.png)
 
+
 - **Interview Session:**  
-  ![Interview Session Screenshot](./snapshots/interview-session.png)
+  ![Interview Session Screenshot]
+  <img width="1907" height="910" alt="Screenshot 2025-07-29 151436" src="https://github.com/user-attachments/assets/3d40ef7f-1e7b-4c47-8ea0-1d98778cd89b" />
+
 
 - **Feedback:**  
-  ![Feedback Screenshot](./snapshots/feedback.png)
+  ![Feedback Screenshot]
+  <img width="1918" height="919" alt="Screenshot 2025-07-29 151530" src="https://github.com/user-attachments/assets/11be7542-661f-429c-a6c3-f00211648b94" />
+
 
 ---
 
