@@ -141,8 +141,6 @@ Train anytime, anywhere — and **master your interview performance**!
   
   >NEXT_PUBLIC_VAPI
 
-- **Customizing Questions:**  
-  Edit logic in [`src/app/(website)/create-interview/Generated-Questions/page.tsx`](src/app/(website)/create-interview/Generated-Questions/page.tsx).
 
 - **AI Feedback:**  
   The feedback API is implemented in [`src/app/api/generateFeedBack/route.ts`](src/app/api/generateFeedBack/route.ts).
@@ -159,6 +157,4 @@ Train anytime, anywhere — and **master your interview performance**!
 
 ---
 
-## License
 
-This project is licensed under the MIT License.
