@@ -8,25 +8,26 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Mic, MicOff, PhoneOff } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
-import vapi from "@vapi-ai/web";
 
 const InterviewPage = () => {
   const { interviewId } = useParams();
   const [chatLog, setChatLog] = useState<any[]>([]);
   const chatLogRef = useRef<any[]>([]);
-
   const interviewIdStr =
     typeof interviewId === "string" ? interviewId : undefined;
-
   const supabase = createClient();
   const vapiRef = useRef<Vapi | null>(null);
 
   const [isSelfMuted, setIsSelfMuted] = useState(false);
+  const [isUserSpeaking, setIsUserSpeaking] = useState(false);
+  const [isAssistantSpeaking, setIsAssistantSpeaking] = useState(false);
+
   const [userProfile, setUserProfile] = useState<{
     username: string;
     avatarUrl: string | null;
     email: string;
   } | null>(null);
+
   function formatChatLog(log: any[]): string {
     let output = "";
     let assistantOutputBuffer = "";
@@ -50,7 +51,6 @@ const InterviewPage = () => {
       }
     });
 
-    // In case buffer has leftover text
     if (assistantOutputBuffer.trim()) {
       output += `👩‍💼 Assistant: ${assistantOutputBuffer.trim()}\n`;
     }
@@ -59,21 +59,44 @@ const InterviewPage = () => {
   }
 
   useEffect(() => {
-    vapiRef.current = new Vapi(process.env.NEXT_PUBLIC_VAPI as string);
-    vapiRef.current.on("message", (msg) => {
+    const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI as string);
+    vapiRef.current = vapi;
+
+    vapi.on("speech-start", () => {
+      setIsAssistantSpeaking(true);
+      setIsSelfMuted(false);
+    });
+
+    vapi.on("speech-end", () => {
+      setIsAssistantSpeaking(false);
+      setIsSelfMuted(true);
+    });
+
+    vapi.on("message", (msg) => {
+      if (msg.role === "assistant") {
+        setIsAssistantSpeaking(true);
+        setIsUserSpeaking(false);
+        setTimeout(() => setIsAssistantSpeaking(false), 2000);
+      } else if (msg.role === "user") {
+        setIsUserSpeaking(true);
+        setIsAssistantSpeaking(false);
+        setTimeout(() => setIsUserSpeaking(false), 2000);
+      }
+
       setChatLog((prev) => {
         const updated = [...prev, msg];
         chatLogRef.current = updated;
         return updated;
       });
     });
-    vapiRef.current.on("call-end", () => {
+
+    vapi.on("call-end", () => {
       const formatted = formatChatLog(chatLogRef.current);
       console.log("📝 Final Chat Transcript:\n" + formatted);
     });
 
     return () => {
-      vapiRef.current?.stop();
+      vapi.stop();
     };
   }, []);
 
@@ -178,30 +201,42 @@ Wrap up after 5–7 questions with encouraging feedback.
       <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
         {/* AI Interviewer */}
         <div className="flex flex-col items-center justify-center bg-muted rounded-lg p-6 border border-border">
-          <Avatar className="w-32 h-32 md:w-40 md:h-40 mb-4 border-2 border-primary">
-            <AvatarImage src="/ai-avatar.png" alt="AI Interviewer" />
-            <AvatarFallback className="bg-primary text-white">
-              AI
-            </AvatarFallback>
-          </Avatar>
+          <div className="relative mb-4">
+            {isAssistantSpeaking && (
+              <div className="absolute inset-0 w-40 h-40 rounded-full border-2 border-primary animate-ping" />
+            )}
+            <Avatar className="relative w-32 h-32 md:w-40 md:h-40 border-2 border-primary z-10">
+              <AvatarImage src="/ai-avatar.png" alt="AI Interviewer" />
+              <AvatarFallback className="bg-primary text-white">
+                AI
+              </AvatarFallback>
+            </Avatar>
+          </div>
           <h2 className="text-xl font-semibold mb-1">AI Interviewer</h2>
-          <p className="text-muted-foreground text-sm">Active</p>
+          <p className="text-muted-foreground text-sm">
+            {isAssistantSpeaking ? "Speaking..." : "Idle"}
+          </p>
         </div>
 
         {/* User */}
         <div className="flex flex-col items-center justify-center bg-muted rounded-lg p-6 border border-border">
-          <Avatar className="w-32 h-32 md:w-40 md:h-40 mb-4 border-2 border-emerald-500">
-            <AvatarImage
-              src={userProfile.avatarUrl || "/default-avatar.jpg"}
-              alt={userProfile.username}
-            />
-            <AvatarFallback className="bg-emerald-500 text-white">
-              {userProfile.username.slice(0, 2).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
+          <div className="relative mb-4">
+            {isUserSpeaking && (
+              <div className="absolute inset-0 w-40 h-40 rounded-full border-2 border-emerald-500 animate-ping" />
+            )}
+            <Avatar className="relative w-32 h-32 md:w-40 md:h-40 border-2 border-emerald-500 z-10">
+              <AvatarImage
+                src={userProfile.avatarUrl || "/default-avatar.jpg"}
+                alt={userProfile.username}
+              />
+              <AvatarFallback className="bg-emerald-500 text-white">
+                {userProfile.username.slice(0, 2).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+          </div>
           <h2 className="text-xl font-semibold mb-1">{userProfile.username}</h2>
           <p className="text-muted-foreground text-sm">
-            {isSelfMuted ? "Muted" : "Active"}
+            {isUserSpeaking ? "Speaking..." : isSelfMuted ? "Muted" : "Idle"}
           </p>
           {isSelfMuted && (
             <div className="mt-2 flex items-center text-destructive">
