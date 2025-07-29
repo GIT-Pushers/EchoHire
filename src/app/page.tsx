@@ -3,27 +3,39 @@
 
 import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+
 import React, { useEffect, useState } from "react";
-import { CheckCircle, Award, Lightbulb, TrendingUp, Users, Brain, Clock } from "lucide-react"; // Icons for features
+import {
+  Award,
+  Lightbulb,
+  TrendingUp,
+  Users,
+  Brain,
+  Clock,
+} from "lucide-react"; // Icons for features
 import { motion } from "framer-motion";
+import { NavbarDemo } from "@/components/MainNabar";
 
 const LandingPage = () => {
   const supabase = createClient();
-  const router = useRouter();
+
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const checkUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       setUser(user);
       setLoading(false);
     };
 
     checkUser();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user || null);
     });
 
@@ -42,12 +54,10 @@ const LandingPage = () => {
 
   return (
     <div className="relative min-h-screen flex flex-col items-center bg-background text-foreground p-0 overflow-x-hidden">
-
-
+      <NavbarDemo />
 
       {/* Main content sections */}
       <main className="relative z-10 w-full max-w-7xl mx-auto py-16 sm:py-24 lg:py-32 px-4 md:px-6">
-
         {/* Hero Section */}
         <motion.section
           id="hero"
@@ -64,7 +74,8 @@ const LandingPage = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            Elevate Your Interview Game with <span className="text-primary">EchoHire</span>
+            Elevate Your Interview Game with{" "}
+            <span className="text-primary">EchoHire</span>
           </motion.h1>
           <motion.p
             className="text-xl md:text-2xl text-muted-foreground mb-10 leading-relaxed max-w-3xl"
@@ -73,8 +84,9 @@ const LandingPage = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            Your AI-powered partner for perfecting interview skills.
-            Practice with realistic simulations, get instant feedback, and confidently land your dream job.
+            Your AI-powered partner for perfecting interview skills. Practice
+            with realistic simulations, get instant feedback, and confidently
+            land your dream job.
           </motion.p>
 
           {user ? (
@@ -107,9 +119,8 @@ const LandingPage = () => {
             </Link>
           )}
         </motion.section>
-
-        <div className="border-b border-border my-20 opacity-0 animate-fade-in animation-delay-200"></div> {/* Separator */}
-
+        <div className="border-b border-border my-20 opacity-0 animate-fade-in animation-delay-200"></div>{" "}
+        {/* Separator */}
         {/* Features/What We Offer Section */}
         <motion.section
           id="features"
@@ -117,7 +128,14 @@ const LandingPage = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
-          variants={{ hidden: { opacity: 0, y: 40 }, visible: { opacity: 1, y: 0, transition: { staggerChildren: 0.15 } } }}
+          variants={{
+            hidden: { opacity: 0, y: 40 },
+            visible: {
+              opacity: 1,
+              y: 0,
+              transition: { staggerChildren: 0.15 },
+            },
+          }}
         >
           <motion.h2
             className="text-5xl font-bold text-center mb-12 text-foreground"
@@ -170,15 +188,15 @@ const LandingPage = () => {
                 transition={{ duration: 0.7, delay: 0.2 + i * 0.1 }}
               >
                 {feature.icon}
-                <h3 className="text-2xl font-semibold mb-3 text-foreground">{feature.title}</h3>
+                <h3 className="text-2xl font-semibold mb-3 text-foreground">
+                  {feature.title}
+                </h3>
                 <p className="text-muted-foreground">{feature.desc}</p>
               </motion.div>
             ))}
           </div>
         </motion.section>
-
         <div className="border-b border-border my-20 opacity-0 animate-fade-in animation-delay-1100"></div>
-
         {/* How It Works Section - Refined Line Animation */}
         <motion.section
           id="how-it-works"
@@ -186,7 +204,14 @@ const LandingPage = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
-          variants={{ hidden: { opacity: 0, y: 40 }, visible: { opacity: 1, y: 0, transition: { staggerChildren: 0.18 } } }}
+          variants={{
+            hidden: { opacity: 0, y: 40 },
+            visible: {
+              opacity: 1,
+              y: 0,
+              transition: { staggerChildren: 0.18 },
+            },
+          }}
         >
           <motion.h2
             className="text-5xl font-bold text-center mb-16 text-foreground"
@@ -230,16 +255,18 @@ const LandingPage = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.7, delay: 0.2 + i * 0.2 }}
               >
-                <div className="w-20 h-20 flex items-center justify-center rounded-full bg-primary text-primary-foreground text-3xl font-bold mb-4 z-10">{item.step}</div>
-                <h3 className="text-2xl font-semibold mb-2 text-foreground">{item.title}</h3>
+                <div className="w-20 h-20 flex items-center justify-center rounded-full bg-primary text-primary-foreground text-3xl font-bold mb-4 z-10">
+                  {item.step}
+                </div>
+                <h3 className="text-2xl font-semibold mb-2 text-foreground">
+                  {item.title}
+                </h3>
                 <p className="text-muted-foreground">{item.desc}</p>
               </motion.div>
             ))}
           </div>
         </motion.section>
-
         <div className="border-b border-border my-20 opacity-0 animate-fade-in animation-delay-2800"></div>
-
         {/* Call to Action Section (Repeated for emphasis) */}
         <motion.section
           id="cta-bottom"
@@ -265,7 +292,8 @@ const LandingPage = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.4 }}
           >
-            Join thousands of students who are transforming their interview skills with EchoHire.
+            Join thousands of students who are transforming their interview
+            skills with EchoHire.
           </motion.p>
           {user ? (
             <Link href="/dashboard">
@@ -297,7 +325,6 @@ const LandingPage = () => {
             </Link>
           )}
         </motion.section>
-
       </main>
 
       {/* Footer */}

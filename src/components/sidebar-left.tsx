@@ -16,6 +16,7 @@ import {
   Settings,
   HelpCircle,
   BrainCircuit,
+  Phone,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -36,6 +37,11 @@ const items = [
     icon: Settings,
   },
   {
+    title: "Contact",
+    url: "/contact",
+    icon: Phone,
+  },
+  {
     title: "Help",
     url: "/help",
     icon: HelpCircle,
@@ -52,7 +58,7 @@ export default function SidebarLeft() {
           className="flex items-center gap-3 text-xl font-semibold text-gray-800"
         >
           <BrainCircuit className="w-6 h-6 text-primary" />
-          <span className="tracking-wide">Eco Hire</span>
+          <span className="tracking-wide">Echo Hire</span>
         </Link>
       </SidebarHeader>
 
