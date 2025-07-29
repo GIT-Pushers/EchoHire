@@ -1,9 +1,20 @@
 "use client";
 
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
 interface Question {
   question: string;
@@ -40,7 +51,6 @@ const MeetingCreatedPage = () => {
       if (storageRaw) {
         const parsed = JSON.parse(storageRaw);
         setInterviewData(parsed.state.interview || null);
-        console.log("✅ Loaded interview data:", parsed.state.interview);
       }
 
       if (questionsRaw) {
@@ -50,81 +60,134 @@ const MeetingCreatedPage = () => {
           parsedQ.state.questions?.interviewQuestions
         );
       }
-
-      // Clean up
-      localStorage.removeItem("interview-storage");
-      localStorage.removeItem("interview-questions");
     } catch (err) {
       console.error("❌ Failed to load or parse localStorage:", err);
     }
   }, []);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background text-foreground px-4">
-      <div className="max-w-2xl w-full space-y-6 bg-muted p-8 rounded-xl shadow-lg border border-border">
-        <h1 className="text-2xl font-semibold text-center">
-          🎉 Meeting Created Successfully!
-        </h1>
-
-        {interviewData && (
-          <div className="space-y-4 text-sm text-foreground bg-background px-4 py-4 rounded-md border border-border">
-            <p>
-              <strong>Company:</strong> {interviewData.companyName}
-            </p>
-            <p>
-              <strong>Job Title:</strong> {interviewData.jobName}
-            </p>
-            <p>
-              <strong>Description:</strong> {interviewData.jobDescription}
-            </p>
-            <p>
-              <strong>Email:</strong> {interviewData.email}
-            </p>
-            <p>
-              <strong>Interview Types:</strong>{" "}
-              {interviewData.interviewTypes.join(", ")}
-            </p>
-            <p>
-              <strong>Total Questions:</strong>{" "}
-              {interviewData.numberOfQuestions}
-            </p>
-
-            <hr />
-
-            <div className="space-y-2">
-              <p className="font-semibold">Questions:</p>
-              {interviewData.questions?.interviewQuestions &&
-                Object.entries(
-                  interviewData.questions.interviewQuestions.reduce(
-                    (acc: Record<string, string[]>, q) => {
-                      acc[q.type] = acc[q.type] || [];
-                      acc[q.type].push(q.question);
-                      return acc;
-                    },
-                    {}
-                  )
-                ).map(([type, questions]) => (
-                  <div key={type}>
-                    <p className="underline text-primary font-medium">{type}</p>
-                    <ul className="list-disc pl-5 text-sm space-y-1">
-                      {questions.map((q, i) => (
-                        <li key={i}>{q}</li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-            </div>
+    <div className="min-h-screen w-full flex items-center justify-center bg-background px-4 py-10">
+      <Card className="w-full max-w-5xl border shadow-lg">
+        <CardHeader>
+          <div className="flex flex-col items-center gap-2 text-center">
+            <div className="text-3xl">🎉</div>
+            <CardTitle className="text-2xl font-bold">
+              Meeting Created Successfully!
+            </CardTitle>
+            <CardDescription>
+              Share the link below or begin the interview now.
+            </CardDescription>
           </div>
+        </CardHeader>
+
+        <Separator />
+
+        {interviewData ? (
+          <CardContent className="p-6 space-y-6">
+            {/* Overview Section */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+              <div className="space-y-2">
+                <p>
+                  <span className="font-semibold">Company:</span>{" "}
+                  {interviewData.companyName}
+                </p>
+                <p>
+                  <span className="font-semibold">Job Title:</span>{" "}
+                  {interviewData.jobName}
+                </p>
+                <p>
+                  <span className="font-semibold">Email:</span>{" "}
+                  {interviewData.email}
+                </p>
+                <p>
+                  <span className="font-semibold">Questions:</span>{" "}
+                  {interviewData.numberOfQuestions}
+                </p>
+              </div>
+              <div className="space-y-2">
+                <p>
+                  <span className="font-semibold">Company Description:</span>
+                </p>
+                <p className="text-muted-foreground">
+                  {interviewData.companyDescription}
+                </p>
+                <p>
+                  <span className="font-semibold">Job Description:</span>
+                </p>
+                <p className="text-muted-foreground">
+                  {interviewData.jobDescription}
+                </p>
+              </div>
+            </div>
+
+            {/* Interview Types */}
+            <div>
+              <p className="font-semibold mb-2">Interview Types:</p>
+              <div className="flex flex-wrap gap-2">
+                {interviewData.interviewTypes.map((type, i) => (
+                  <Badge key={i} variant="secondary">
+                    {type}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+
+            <Separator />
+
+            {/* Questions Section */}
+            <div>
+              <p className="font-semibold mb-3">Interview Questions:</p>
+              <ScrollArea className="h-64 pr-2">
+                <div className="space-y-4">
+                  {Object.entries(
+                    interviewData.questions.interviewQuestions.reduce(
+                      (acc: Record<string, string[]>, q) => {
+                        acc[q.type] = acc[q.type] || [];
+                        acc[q.type].push(q.question);
+                        return acc;
+                      },
+                      {}
+                    )
+                  ).map(([type, questions]) => (
+                    <div key={type}>
+                      <p className="font-medium underline text-primary">
+                        {type}
+                      </p>
+                      <ul className="list-disc pl-5 space-y-1 text-muted-foreground text-sm">
+                        {questions.map((q, i) => (
+                          <li key={i}>{q}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </ScrollArea>
+            </div>
+
+            <Separator />
+
+            {/* Interview Link */}
+            <div className="text-sm">
+              <p className="font-semibold mb-1">Interview Link:</p>
+              <code className="block break-all bg-muted p-2 rounded-md border text-muted-foreground">
+                {interviewLink}
+              </code>
+            </div>
+          </CardContent>
+        ) : (
+          <CardContent>
+            <p className="text-center text-muted-foreground">
+              Loading interview data...
+            </p>
+          </CardContent>
         )}
 
-        <div className="break-all text-sm text-foreground bg-background px-4 py-2 rounded-md border border-border">
-          <code>{interviewLink}</code>
-        </div>
-
-        <Button asChild className="w-full">
-          <Link href={interviewLink}>Join Interview</Link>
-        </Button>
-      </div>
+        <CardFooter>
+          <Button asChild className="w-full">
+            <Link href={interviewLink}>Join Interview</Link>
+          </Button>
+        </CardFooter>
+      </Card>
     </div>
   );
 };

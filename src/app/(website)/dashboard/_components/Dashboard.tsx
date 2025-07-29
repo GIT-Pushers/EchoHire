@@ -106,7 +106,7 @@ const DashBoard = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-muted/40 px-4 py-8 sm:px-6 sm:py-12">
+    <div className="h-full w-full bg-muted/40 px-4 py-8 sm:px-6 sm:py-12">
       <div className="w-full max-w-7xl mx-auto">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 sm:mb-10">
           <div>
