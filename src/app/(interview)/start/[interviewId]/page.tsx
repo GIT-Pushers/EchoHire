@@ -1,14 +1,15 @@
 "use client";
 import Vapi from "@vapi-ai/web";
-import { FetchInterviewDetals } from "@/service/service";
+import { FetchInterviewDetals, generateFeedBack } from "@/service/service";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import React, { useState, useEffect, useRef } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Mic, MicOff, PhoneOff } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import vapi from "@vapi-ai/web";
+import { useInterviewResultStore } from "@/store/useInterviewResultStore";
 
 const InterviewPage = () => {
   const { interviewId } = useParams();
@@ -67,9 +68,17 @@ const InterviewPage = () => {
         return updated;
       });
     });
-    vapiRef.current.on("call-end", () => {
+    vapiRef.current.on("call-end", async () => {
       const formatted = formatChatLog(chatLogRef.current);
       console.log("📝 Final Chat Transcript:\n" + formatted);
+      const fbJson = await generateFeedBack(formatted);
+      if (fbJson == null) {
+        redirect("/dashboard");
+      }
+      console.log("feedback----------", fbJson);
+      const { setResult } = useInterviewResultStore.getState();
+      setResult(fbJson);
+      redirect("/result");
     });
 
     return () => {

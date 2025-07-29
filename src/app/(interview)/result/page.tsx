@@ -2,40 +2,36 @@
 
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { useRouter } from "next/navigation";
-
-const interviewResult = {
-  communication: 8,
-  confidence: 7,
-  technicalKnowledge: 9,
-  collaboration: 6,
-  hirePercentage: 85,
-  suggestion:
-    "You demonstrated good knowledge and communication. To improve further, work on giving more structured answers and showing stronger confidence when discussing your projects. Keep practicing mock interviews and refine how you present yourself.",
-};
+import { useInterviewResultStore } from "@/store/useInterviewResultStore";
 
 const COLORS = ["#4F46E5", "#16A34A", "#DC2626", "#F59E0B"];
 
-const metricData = [
-  {
-    name: "Communication",
-    value: interviewResult.communication,
-    color: COLORS[0],
-  },
-  { name: "Confidence", value: interviewResult.confidence, color: COLORS[1] },
-  {
-    name: "Technical Knowledge",
-    value: interviewResult.technicalKnowledge,
-    color: COLORS[2],
-  },
-  {
-    name: "Collaboration",
-    value: interviewResult.collaboration,
-    color: COLORS[3],
-  },
-];
-
 export default function InterviewEndPage() {
   const router = useRouter();
+  const { result } = useInterviewResultStore();
+
+  const metricData = [
+    {
+      name: "Communication",
+      value: result.communication,
+      color: COLORS[0],
+    },
+    {
+      name: "Confidence",
+      value: result.confidence,
+      color: COLORS[1],
+    },
+    {
+      name: "Technical Knowledge",
+      value: result.technicalKnowledge,
+      color: COLORS[2],
+    },
+    {
+      name: "Collaboration",
+      value: result.collaboration,
+      color: COLORS[3],
+    },
+  ];
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-indigo-50 to-white px-4 py-10 flex flex-col items-center relative">
@@ -65,21 +61,20 @@ export default function InterviewEndPage() {
           </h2>
           <ul className="space-y-3 text-gray-800 text-base">
             <li>
-              <strong>Communication:</strong> {interviewResult.communication}/10
+              <strong>Communication:</strong> {result.communication}/10
             </li>
             <li>
-              <strong>Confidence:</strong> {interviewResult.confidence}/10
+              <strong>Confidence:</strong> {result.confidence}/10
             </li>
             <li>
-              <strong>Technical Knowledge:</strong>{" "}
-              {interviewResult.technicalKnowledge}/10
+              <strong>Technical Knowledge:</strong> {result.technicalKnowledge}
+              /10
             </li>
             <li>
-              <strong>Collaboration:</strong> {interviewResult.collaboration}/10
+              <strong>Collaboration:</strong> {result.collaboration}/10
             </li>
             <li>
-              <strong>Hire Recommendation:</strong>{" "}
-              {interviewResult.hirePercentage}%
+              <strong>Hire Recommendation:</strong> {result.hirePercentage}%
             </li>
           </ul>
 
@@ -87,9 +82,7 @@ export default function InterviewEndPage() {
             <h3 className="text-md font-medium mb-2 text-gray-700">
               Feedback & Suggestions
             </h3>
-            <p className="text-gray-600 leading-relaxed">
-              {interviewResult.suggestion}
-            </p>
+            <p className="text-gray-600 leading-relaxed">{result.suggestion}</p>
           </div>
         </div>
 
