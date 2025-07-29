@@ -126,11 +126,12 @@ interface FeedbackResponse {
   hirePercentage: number;
   suggestion: string;
 }
+
 export async function generateFeedBack(
   transcript: string
 ): Promise<FeedbackResponse | null> {
   try {
-    const response = await axios.post<FeedbackResponse>("/api/getFeedBack", {
+    const response = await axios.post<FeedbackResponse>("/api/generateFeedBack", {
       transcript,
     });
     return response.data;
