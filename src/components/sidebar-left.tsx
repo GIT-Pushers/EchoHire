@@ -49,7 +49,7 @@ const data = {
     },
     {
       title: "Start Interview",
-      url: "/interview",
+      url: "/create-interview",
       icon: Mic,
       isActive: false,
     },
