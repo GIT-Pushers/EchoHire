@@ -8,9 +8,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Mic, MicOff, PhoneOff } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
+import vapi from "@vapi-ai/web";
 
 const InterviewPage = () => {
   const { interviewId } = useParams();
+  const [chatLog, setChatLog] = useState<any[]>([]);
+  const chatLogRef = useRef<any[]>([]);
+
   const interviewIdStr =
     typeof interviewId === "string" ? interviewId : undefined;
 
@@ -23,9 +27,51 @@ const InterviewPage = () => {
     avatarUrl: string | null;
     email: string;
   } | null>(null);
+  function formatChatLog(log: any[]): string {
+    let output = "";
+    let assistantOutputBuffer = "";
+
+    log.forEach((entry) => {
+      if (entry.type === "transcript" && entry.transcriptType === "final") {
+        if (entry.role === "assistant") {
+          output += `👩‍💼 Assistant: ${entry.transcript}\n`;
+        } else if (entry.role === "user") {
+          output += `🧑‍💻 You: ${entry.transcript}\n`;
+        }
+      }
+
+      if (entry.type === "model-output") {
+        assistantOutputBuffer += entry.output;
+      }
+
+      if (entry.type === "voice-input" && assistantOutputBuffer) {
+        output += `👩‍💼 Assistant: ${assistantOutputBuffer.trim()}\n`;
+        assistantOutputBuffer = "";
+      }
+    });
+
+    // In case buffer has leftover text
+    if (assistantOutputBuffer.trim()) {
+      output += `👩‍💼 Assistant: ${assistantOutputBuffer.trim()}\n`;
+    }
+
+    return output.trim();
+  }
 
   useEffect(() => {
     vapiRef.current = new Vapi(process.env.NEXT_PUBLIC_VAPI as string);
+    vapiRef.current.on("message", (msg) => {
+      setChatLog((prev) => {
+        const updated = [...prev, msg];
+        chatLogRef.current = updated;
+        return updated;
+      });
+    });
+    vapiRef.current.on("call-end", () => {
+      const formatted = formatChatLog(chatLogRef.current);
+      console.log("📝 Final Chat Transcript:\n" + formatted);
+    });
+
     return () => {
       vapiRef.current?.stop();
     };
@@ -185,7 +231,9 @@ Wrap up after 5–7 questions with encouraging feedback.
           variant="destructive"
           size="lg"
           className="rounded-full w-14 h-14 p-0"
-          onClick={() => vapiRef.current?.stop()}
+          onClick={() => {
+            vapiRef.current?.stop();
+          }}
         >
           <PhoneOff className="h-6 w-6" />
         </Button>
