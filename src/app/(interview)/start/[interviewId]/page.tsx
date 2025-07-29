@@ -3,47 +3,50 @@ import Vapi from "@vapi-ai/web";
 import { FetchInterviewDetals } from "@/service/service";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Mic, MicOff, PhoneOff } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 
 const InterviewPage = () => {
-  const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI as string);
   const { interviewId } = useParams();
   const interviewIdStr =
     typeof interviewId === "string" ? interviewId : undefined;
+
+  const supabase = createClient();
+  const vapiRef = useRef<Vapi | null>(null);
+
   const [isSelfMuted, setIsSelfMuted] = useState(false);
   const [userProfile, setUserProfile] = useState<{
     username: string;
     avatarUrl: string | null;
     email: string;
   } | null>(null);
-  const supabase = createClient();
 
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+    vapiRef.current = new Vapi(process.env.NEXT_PUBLIC_VAPI as string);
+    return () => {
+      vapiRef.current?.stop();
+    };
+  }, []);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data } = await supabase.auth.getSession();
+      const user = data?.session?.user;
 
       if (user) {
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("username, avatar_url")
-          .eq("id", user.id)
-          .single();
-
         setUserProfile({
-          username: profile?.username || user.email?.split("@")[0] || "User",
-          avatarUrl: user?.user_metadata?.avatar_url || null,
+          username:
+            user.user_metadata?.name || user.email?.split("@")[0] || "User",
+          avatarUrl: user.user_metadata?.avatar_url || null,
           email: user.email || "",
         });
       }
     };
 
-    fetchUserProfile();
+    fetchUser();
   }, [supabase]);
 
   const { data, isLoading } = useQuery({
@@ -51,70 +54,67 @@ const InterviewPage = () => {
     queryKey: ["Interview-current", interviewIdStr],
     enabled: !!interviewIdStr,
   });
-  useEffect(() => {
-    if (!isLoading && data && userProfile) {
-      startcall();
-    }
-  }, [isLoading, data, userProfile]);
 
-  console.log(userProfile);
-  console.log("data---------", data);
+  const formatQuestions = () => {
+    if (!data?.questions?.interviewQuestions) return "";
 
-  const startcall = () => {
-    let questionList = "";
-    data?.questions.forEach((q: any) => {
-      questionList = q.question + "," + questionList;
-    });
-
-    console.log(questionList);
-
-    vapi.start({
-      name: "AI Recruiter",
-      firstMessage: `Hi ${userProfile?.username}, how are you? Ready for your interview on ${data?.jobName}?`,
-      transcriber: {
-        provider: "deepgram",
-        model: "nova-2",
-        language: "en-US",
+    const grouped = data.questions.interviewQuestions.reduce(
+      (
+        acc: Record<string, string[]>,
+        q: { question: string; type: string }
+      ) => {
+        acc[q.type] = acc[q.type] || [];
+        acc[q.type].push(q.question);
+        return acc;
       },
-      voice: {
-        provider: "playht",
-        voiceId: "jennifer",
-      },
-      model: {
-        provider: "openai",
-        model: "gpt-4",
-        messages: [
-          {
-            role: "system",
-            content: `
-You are an AI voice assistant conducting interviews.
-Your job is to ask candidates provided interview questions, assess their responses.
-Begin the conversation with a friendly introduction, setting a relaxed yet professional tone. Example:
-"Hey there! Welcome to your ${data.jobName} interview. Let’s get started with a few questions!"
-Ask one question at a time and wait for the candidate’s response before proceeding. Keep the questions clear and concise. Below Are the questions ask one by one:
-Questions: ${questionList}
-If the candidate struggles, offer hints or rephrase the question without giving away the answer. Example:
-"Need a hint? Think about how React tracks component updates!"
-Provide brief, encouraging feedback after each answer. Example:
-"Nice! That’s a solid answer."
-"Hmm, not quite! Want to try again?"
-Keep the conversation natural and engaging—use casual phrases like "Alright, next up…" or "Let’s tackle a tricky one!"
-After 5-7 questions, wrap up the interview smoothly by summarizing their performance. Example:
-"That was great! You handled some tough questions well. Keep sharpening your skills!"
-End on a positive note:
-"Thanks for chatting! Hope to see you crushing projects soon!"
-Key Guidelines:
-✓ Be friendly, engaging, and witty
-✓ Keep responses short and natural, like a real conversation
-✓ Adapt based on the candidate’s confidence level
-✓ Ensure the interview remains focused on React`.trim(),
-          },
-        ],
-      },
-    });
+      {}
+    );
+
+    return Object.entries(grouped)
+      .map(
+        ([type, questions]) =>
+          `${type}:\n${questions.map((q, i) => `${i + 1}. ${q}`).join("\n")}`
+      )
+      .join("\n\n");
   };
 
- 
+  useEffect(() => {
+    if (!isLoading && data && userProfile && vapiRef.current) {
+      const formattedQuestions = formatQuestions();
+
+      vapiRef.current.start({
+        name: "AI Recruiter",
+        firstMessage: `Hi ${userProfile.username}, how are you? Ready for your interview on ${data.jobName}?`,
+        transcriber: {
+          provider: "deepgram",
+          model: "nova-2",
+          language: "en-US",
+        },
+        voice: {
+          provider: "playht",
+          voiceId: "jennifer",
+        },
+        model: {
+          provider: "openai",
+          model: "gpt-4",
+          messages: [
+            {
+              role: "system",
+              content: `
+You are an AI voice assistant conducting a mock interview.
+Ask the following questions one by one, based on the categories provided:
+
+${formattedQuestions}
+
+Be friendly and clear. Provide hints if the user struggles.
+Wrap up after 5–7 questions with encouraging feedback.
+              `.trim(),
+            },
+          ],
+        },
+      });
+    }
+  }, [isLoading, data, userProfile]);
 
   if (isLoading || !userProfile) {
     return (
@@ -130,6 +130,7 @@ Key Guidelines:
   return (
     <div className="flex flex-col h-screen bg-background text-foreground">
       <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+        {/* AI Interviewer */}
         <div className="flex flex-col items-center justify-center bg-muted rounded-lg p-6 border border-border">
           <Avatar className="w-32 h-32 md:w-40 md:h-40 mb-4 border-2 border-primary">
             <AvatarImage src="/ai-avatar.png" alt="AI Interviewer" />
@@ -137,12 +138,11 @@ Key Guidelines:
               AI
             </AvatarFallback>
           </Avatar>
-          <h2 className="text-xl font-semibold mb-1 text-foreground">
-            AI Interviewer
-          </h2>
+          <h2 className="text-xl font-semibold mb-1">AI Interviewer</h2>
           <p className="text-muted-foreground text-sm">Active</p>
         </div>
 
+        {/* User */}
         <div className="flex flex-col items-center justify-center bg-muted rounded-lg p-6 border border-border">
           <Avatar className="w-32 h-32 md:w-40 md:h-40 mb-4 border-2 border-emerald-500">
             <AvatarImage
@@ -153,9 +153,7 @@ Key Guidelines:
               {userProfile.username.slice(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
-          <h2 className="text-xl font-semibold mb-1 text-foreground">
-            {userProfile.username}
-          </h2>
+          <h2 className="text-xl font-semibold mb-1">{userProfile.username}</h2>
           <p className="text-muted-foreground text-sm">
             {isSelfMuted ? "Muted" : "Active"}
           </p>
@@ -168,6 +166,7 @@ Key Guidelines:
         </div>
       </div>
 
+      {/* Controls */}
       <div className="bg-muted p-4 flex justify-center space-x-6 border-t border-border">
         <Button
           variant={isSelfMuted ? "destructive" : "secondary"}
@@ -186,8 +185,9 @@ Key Guidelines:
           variant="destructive"
           size="lg"
           className="rounded-full w-14 h-14 p-0"
+          onClick={() => vapiRef.current?.stop()}
         >
-          <PhoneOff className="h-6 w-6" onClick={() => vapi.stop()} />
+          <PhoneOff className="h-6 w-6" />
         </Button>
       </div>
 
