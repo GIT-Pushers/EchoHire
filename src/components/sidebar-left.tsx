@@ -86,7 +86,7 @@ export function SidebarLeft(props: React.ComponentProps<typeof Sidebar>) {
         {/* Logo & App Name */}
         <div className="text-xl font-semibold text-gray-800 flex items-center gap-2">
           <Command className="w-5 h-5" />
-          AI Interview
+          EchoHire
         </div>
       </SidebarHeader>
 
