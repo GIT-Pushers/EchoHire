@@ -8,7 +8,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Mic, MicOff, PhoneOff } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
-import vapi from "@vapi-ai/web";
 
 const InterviewPage = () => {
   const { interviewId } = useParams();
