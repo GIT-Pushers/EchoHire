@@ -22,9 +22,11 @@ import { cn } from "@/lib/utils";
 const NavBar = () => {
   const supabase = createClient();
   const pathname = usePathname();
+
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
   const [userInitials, setUserInitials] = useState<string>("CN");
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [userFullName, setUserFullName] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -33,28 +35,27 @@ const NavBar = () => {
       } = await supabase.auth.getUser();
 
       if (user) {
-        setUserAvatar(user.user_metadata?.avatar_url || null);
-        setUserEmail(user.email ?? " ");
-        const username = user.user_metadata?.username;
+        const metadata = user.user_metadata || {};
+        setUserAvatar(metadata.avatar_url || null);
+        setUserEmail(user.email ?? "");
+        setUserFullName(metadata.full_name ?? null);
 
-        if (username) {
-          setUserInitials(
-            username.charAt(0).toUpperCase() +
-              (username.charAt(1) || "").toUpperCase()
-          );
-        } else if (user.email) {
-          const emailPrefix = user.email.split("@")[0];
-          setUserInitials(
-            emailPrefix.charAt(0).toUpperCase() +
-              (emailPrefix.charAt(1) || "").toUpperCase()
-          );
-        } else {
-          setUserInitials("U");
-        }
+        const initials = metadata.full_name
+          ? metadata.full_name
+              .split(" ")
+              .map((part: string) => part[0])
+              .join("")
+              .toUpperCase()
+          : user.email
+          ? user.email.slice(0, 2).toUpperCase()
+          : "U";
+
+        setUserInitials(initials);
       } else {
         setUserAvatar(null);
         setUserInitials("CN");
         setUserEmail(null);
+        setUserFullName(null);
       }
     };
 
@@ -63,27 +64,29 @@ const NavBar = () => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
-        setUserAvatar(session.user.user_metadata?.avatar_url || null);
-        setUserEmail(session.user.email ?? " ");
-        const username = session.user.user_metadata?.username;
+      const user = session?.user;
+      if (user) {
+        const metadata = user.user_metadata || {};
+        setUserAvatar(metadata.avatar_url || null);
+        setUserEmail(user.email ?? "");
+        setUserFullName(metadata.full_name ?? null);
 
-        if (username) {
-          setUserInitials(
-            username.charAt(0).toUpperCase() +
-              (username.charAt(1) || "").toUpperCase()
-          );
-        } else if (session.user.email) {
-          const emailPrefix = session.user.email.split("@")[0];
-          setUserInitials(
-            emailPrefix.charAt(0).toUpperCase() +
-              (emailPrefix.charAt(1) || "").toUpperCase()
-          );
-        }
+        const initials = metadata.full_name
+          ? metadata.full_name
+              .split(" ")
+              .map((part: string) => part[0])
+              .join("")
+              .toUpperCase()
+          : user.email
+          ? user.email.slice(0, 2).toUpperCase()
+          : "U";
+
+        setUserInitials(initials);
       } else {
         setUserAvatar(null);
         setUserInitials("CN");
         setUserEmail(null);
+        setUserFullName(null);
       }
     });
 
@@ -122,7 +125,7 @@ const NavBar = () => {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src={userAvatar as string} alt="User Avatar" />
+                  <AvatarImage src={userAvatar ?? ""} alt="User Avatar" />
                   <AvatarFallback className="bg-primary text-primary-foreground">
                     {userInitials}
                   </AvatarFallback>
@@ -133,7 +136,7 @@ const NavBar = () => {
               <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col space-y-1">
                   <p className="text-sm font-medium leading-none">
-                    {userInitials}
+                    {userFullName || userInitials}
                   </p>
                   {userEmail && (
                     <p className="text-xs leading-none text-muted-foreground">

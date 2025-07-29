@@ -15,8 +15,8 @@ import {
   PlusCircle,
   Settings,
   HelpCircle,
-  BrainCircuit,
   Phone,
+  AudioLines,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -57,8 +57,8 @@ export default function SidebarLeft() {
           href="/"
           className="flex items-center gap-3 text-xl font-semibold text-gray-800"
         >
-          <BrainCircuit className="w-6 h-6 text-primary" />
-          <span className="tracking-wide">Echo Hire</span>
+          <AudioLines className="w-6 h-6 text-primary" />
+          <span className="tracking-wide">EchoHire</span>
         </Link>
       </SidebarHeader>
 
