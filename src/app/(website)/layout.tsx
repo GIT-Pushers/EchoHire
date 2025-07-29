@@ -1,5 +1,5 @@
 import NavBar from "@/components/AppNavbar";
-import { SidebarLeft } from "@/components/sidebar-left";
+import SidebarLeft from "@/components/sidebar-left";
 
 import { SidebarProvider } from "@/components/ui/sidebar";
 import React, { ReactNode } from "react";

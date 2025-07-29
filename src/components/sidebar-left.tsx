@@ -1,104 +1,83 @@
-"use client";
-
-import * as React from "react";
-import {
-  AudioWaveform,
-  Command,
-  HelpCircle,
-  History,
-  Home,
-  Mic,
-  Settings,
-} from "lucide-react";
-
-import { NavMain } from "@/components/nav-main";
-import { NavUser } from "./nav-user";
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
   SidebarHeader,
-  SidebarRail,
 } from "@/components/ui/sidebar";
 
-// Sample data
-const data = {
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: Command,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "/dashboard",
-      icon: Home,
-      isActive: true,
-    },
-    {
-      title: "Start Interview",
-      url: "/create-interview",
-      icon: Mic,
-      isActive: false,
-    },
-    {
-      title: "Session History",
-      url: "/sessions",
-      icon: History,
-      isActive: false,
-    },
-    {
-      title: "Settings",
-      url: "/settings",
-      icon: Settings,
-      isActive: false,
-    },
-    {
-      title: "Help / Tips",
-      url: "/help",
-      icon: HelpCircle,
-      isActive: false,
-    },
-  ],
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-};
+import {
+  Home,
+  PlusCircle,
+  Settings,
+  HelpCircle,
+  BrainCircuit,
+} from "lucide-react";
 
-export function SidebarLeft(props: React.ComponentProps<typeof Sidebar>) {
+const items = [
+  {
+    title: "Dashboard",
+    url: "/dashboard",
+    icon: Home,
+  },
+  {
+    title: "Create Interview",
+    url: "/create-interview",
+    icon: PlusCircle,
+  },
+  {
+    title: "Settings",
+    url: "/settings",
+    icon: Settings,
+  },
+  {
+    title: "Help",
+    url: "/help",
+    icon: HelpCircle,
+  },
+];
+
+export default function SidebarLeft() {
   return (
-    <Sidebar className="border-r bg-white" {...props}>
-      <SidebarHeader className="p-4 border-b">
-        {/* Logo & App Name */}
-        <div className="text-xl font-semibold text-gray-800 flex items-center gap-2">
-          <Command className="w-5 h-5" />
-          EchoHire
-        </div>
+    <Sidebar>
+      {/* Big Header */}
+      <SidebarHeader className="px-4 py-6 border-b border-gray-200">
+        <a
+          href="/home"
+          className="flex items-center gap-3 text-xl font-semibold text-gray-800"
+        >
+          <BrainCircuit className="w-6 h-6 text-primary" />
+          <span className="tracking-wide">Eco Hire</span>
+        </a>
       </SidebarHeader>
 
-      <SidebarContent className="flex-1">
-        <NavMain items={data.navMain} />
+      {/* Menu */}
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Application</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {items.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <a
+                      href={item.url}
+                      className="flex items-center gap-2 text-sm font-medium"
+                    >
+                      <item.icon className="w-4 h-4" />
+                      <span>{item.title}</span>
+                    </a>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
-
-      <SidebarFooter className="border-t p-4">
-        <NavUser user={data.user} />
-      </SidebarFooter>
-
-      <SidebarRail />
     </Sidebar>
   );
 }
