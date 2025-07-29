@@ -35,11 +35,9 @@ Train anytime, anywhere — and **master your interview performance**!
 - [Features](#features)
 - [Project Structure](#project-structure)
 - [Getting Started](#getting-started)
-- [Usage](#usage)
 - [Screenshots](#screenshots)
 - [Configuration](#configuration)
 - [Contributing](#contributing)
-- [License](#license)
 
 ---
 
