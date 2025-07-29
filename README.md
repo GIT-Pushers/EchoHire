@@ -1,6 +1,32 @@
-# EchoHire
+#  EchoHire
 
-EchoHire is an AI-powered interview preparation platform built with [Next.js](https://nextjs.org). It enables users to generate, edit, and practice interview questions, receive AI-driven feedback, and track their progress—all in a modern, responsive web interface.
+**EchoHire** is an online platform that uses Artificial Intelligence to conduct mock interviews, providing students with a realistic practice environment and instant feedback to improve their interview skills.
+
+You can engage in realistic mock interviews with an AI interviewer that simulates real-world scenarios, asks relevant questions, and provides instant, constructive feedback.
+
+The platform is designed to help you:
+
+-  Hone your communication skills  
+-  Boost your confidence  
+-  Refine your answers in a pressure-free environment  
+
+
+Train anytime, anywhere — and **master your interview performance**!
+---
+## Features
+
+- **AI-Generated Interview Questions:** Automatically generate interview questions tailored to your needs.
+- **Question Editing:** Edit and customize generated questions and their types.
+- **Mock Interview Experience:** Simulate real interviews with voice input and assistant responses.
+- **AI Feedback:** Receive structured feedback and suggestions for improvement after each session.
+- **User Dashboard:** Navigate easily between dashboard, interview creation, and history.
+- **Modern UI:** Built with React, Tailwind CSS, and Lucide icons for a clean, intuitive interface.
+- **Supabase Integration:** Secure user authentication and data storage using Supabase.
+- **Voice API Integration:** Practice interviews with real-time voice input and output (powered by VAPI).
+- **Google API Integration:** Enhance question generation and feedback with Google AI services.
+- **Responsive Design:** Fully responsive and mobile-friendly interface.
+- **Session History:** Track and review past interview sessions and feedback.
+- **Customizable Interview Types:** Support for multiple question types (e.g., technical, behavioral).
 
 ---
 
@@ -17,16 +43,7 @@ EchoHire is an AI-powered interview preparation platform built with [Next.js](ht
 
 ---
 
-## Features
 
-- **AI-Generated Interview Questions:** Automatically generate interview questions tailored to your needs.
-
-- **Mock Interview Experience:** Simulate real interviews with voice input and assistant responses.
-- **AI Feedback:** Receive structured feedback and suggestions for improvement after each session.
-- **User Dashboard:** Navigate easily between dashboard, interview creation, and history.
-- **Modern UI:** Built with React, Tailwind CSS, and Lucide icons for a clean, intuitive interface.
-
----
 
 ## Project Structure
 
@@ -81,21 +98,7 @@ EchoHire is an AI-powered interview preparation platform built with [Next.js](ht
 
 ---
 
-## Usage
 
-- **View Questions:**  
-  Go to `/create-interview` to generate and view interview questions.  
-  ![Edit Questions Screenshot](./snapshots/edit-questions.png) <!-- Placeholder -->
-
-- **Start Interview:**  
-  Begin a mock interview session and interact with the AI assistant.  
-  ![Start Interview Screenshot](./snapshots/start-interview.png) <!-- Placeholder -->
-
-- **Receive Feedback:**  
-  After the session, receive AI-generated feedback and suggestions.  
-  ![Feedback Screenshot](./snapshots/feedback.png) <!-- Placeholder -->
-
----
 
 ## Screenshots
 
@@ -109,9 +112,6 @@ EchoHire is an AI-powered interview preparation platform built with [Next.js](ht
 - **Dashboard:**  
   ![Dashboard Screenshot](./snapshots/dashboard.png)
 
-- **Edit Questions:**  
-  ![Edit Questions Screenshot](./snapshots/edit-questions.png)
-
 - **Interview Session:**  
   ![Interview Session Screenshot](./snapshots/interview-session.png)
 
@@ -124,6 +124,17 @@ EchoHire is an AI-powered interview preparation platform built with [Next.js](ht
 
 - **Environment Variables:**  
   Store API keys and configuration in `.env.local`.
+
+  API's used
+  >NEXT_PUBLIC_SUPABASE_URL
+
+  >NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  >NEXT_PUBLIC_BASE_
+
+  >GOOGLE_API_KEY
+  
+  >NEXT_PUBLIC_VAPI
 
 - **Customizing Questions:**  
   Edit logic in [`src/app/(website)/create-interview/Generated-Questions/page.tsx`](src/app/(website)/create-interview/Generated-Questions/page.tsx).
