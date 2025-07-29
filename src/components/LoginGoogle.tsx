@@ -7,20 +7,21 @@ import { FaGoogle } from "react-icons/fa";
 const LoginGoogle = () => {
   const [isPending, startTransition] = useTransition();
 
-  const handleGithubLogin = () => {
+  const handleGoogleLogin = () => {
     startTransition(async () => {
       await signInWithGoogle();
     });
   };
+
   return (
     <div
-      onClick={handleGithubLogin}
-      className="w-full gap-4 hover:cursor-pointer mt-6 h-12 bg-gray-800 rounded-md p-4 flex justify-center items-center"
+      onClick={handleGoogleLogin}
+      role="button"
+      tabIndex={0}
+      className="w-full h-12 rounded-lg bg-foreground text-background flex items-center justify-center gap-3 px-4 font-medium shadow transition hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-ring"
     >
-      <FaGoogle className="text-white" />
-      <p className="text-white">
-        {isPending ? "Redirecting..." : "Login with Google"}
-      </p>
+      <FaGoogle className="text-lg" />
+      <span>{isPending ? "Redirecting..." : "Login with Google"}</span>
     </div>
   );
 };
