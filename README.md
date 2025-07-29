@@ -1,4 +1,4 @@
-<img width="1890" height="872" alt="image" src="https://github.com/user-attachments/assets/85ee153a-bd36-44f0-b20e-e1f7f35db906" /># EchoHire
+# EchoHire
 
 EchoHire is an AI-powered interview preparation platform built with [Next.js](https://nextjs.org). It enables users to generate, edit, and practice interview questions, receive AI-driven feedback, and track their progress—all in a modern, responsive web interface.
 
