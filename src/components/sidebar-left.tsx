@@ -17,6 +17,7 @@ import {
   HelpCircle,
   BrainCircuit,
 } from "lucide-react";
+import Link from "next/link";
 
 const items = [
   {
@@ -46,13 +47,13 @@ export default function SidebarLeft() {
     <Sidebar>
       {/* Big Header */}
       <SidebarHeader className="px-4 py-6 border-b border-gray-200">
-        <a
-          href="/home"
+        <Link
+          href="/"
           className="flex items-center gap-3 text-xl font-semibold text-gray-800"
         >
           <BrainCircuit className="w-6 h-6 text-primary" />
           <span className="tracking-wide">Eco Hire</span>
-        </a>
+        </Link>
       </SidebarHeader>
 
       {/* Menu */}

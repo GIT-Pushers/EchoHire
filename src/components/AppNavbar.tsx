@@ -1,6 +1,6 @@
 "use client";
 
-import { Settings, LogOut, User, HelpCircle } from "lucide-react";
+import { Settings, HelpCircle } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -90,11 +90,6 @@ const NavBar = () => {
     return () => subscription?.unsubscribe();
   }, [supabase]);
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    window.location.href = "/";
-  };
-
   const navLinks = [{ href: "/dashboard", label: "Dashboard" }];
 
   return (
@@ -148,12 +143,7 @@ const NavBar = () => {
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link href="/profile" className="w-full">
-                  <User className="mr-2 h-4 w-4" />
-                  Profile
-                </Link>
-              </DropdownMenuItem>
+
               <DropdownMenuItem asChild>
                 <Link href="/settings" className="w-full">
                   <Settings className="mr-2 h-4 w-4" />
@@ -165,14 +155,6 @@ const NavBar = () => {
                   <HelpCircle className="mr-2 h-4 w-4" />
                   Help
                 </Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={handleLogout}
-                className="text-destructive focus:text-destructive"
-              >
-                <LogOut className="mr-2 h-4 w-4" />
-                Log out
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
